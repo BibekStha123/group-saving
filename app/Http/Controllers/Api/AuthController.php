@@ -20,6 +20,11 @@ class AuthController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
+            'gender' => $data['gender'],
+            'dob' =>  $data['dob'],
+            'address' =>  $data['address'],
+            'contact_no' =>  $data['contact_no'],
+            'is_leader' => true
         ]);
 
         $token = $user->createToken('mytoken')->plainTextToken;
@@ -48,5 +53,15 @@ class AuthController extends Controller
         return response([
             'errors' => "Credentials does not match"
         ], 401);
+    }
+
+    public function logout(Request $request)
+    {
+        /** @var \App\Models\User $user */
+        $user = $request->user();
+        $user->currentAccessToken()->delete;
+        return response([
+            'message' => "Logged Out Successfully"
+        ], 200);
     }
 }
