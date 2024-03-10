@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignId('created_by')->constrained(
                 table: 'users', indexName: 'creator_user_id'
             );
-            $table->enum('status', ['deposited', 'withdrawn']);
+            $table->enum('status', ['deposited', 'withdrawn', 'loan']);
             $table->integer('amount');
             $table->timestamps();
         });

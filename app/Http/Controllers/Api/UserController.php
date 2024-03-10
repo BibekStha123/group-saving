@@ -16,9 +16,10 @@ class UserController extends Controller
     public function index()
     {
         //
-        $user = Auth::id();
+        $authUserId = Auth::id();
+        $team = User::find($authUserId)->team;
         return response([
-            'user' => User::find($user)->is_leader
+            'users' => $team->users
        ]);
     }
 

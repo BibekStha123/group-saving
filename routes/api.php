@@ -22,13 +22,13 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::middleware('is_leader')->group(function() {
+    Route::middleware('is_leader')->group(function () {
         Route::apiResource('/users', UserController::class);
+        Route::apiResource('/team', TeamController::class);
     });
-    Route::apiResource('/team', TeamController::class);
 });
 
-Route::controller(AuthController::class)->group(function() {
+Route::controller(AuthController::class)->group(function () {
     Route::post('/register', 'register');
     Route::post('/login', 'login');
 });
