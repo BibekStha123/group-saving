@@ -20,7 +20,9 @@ class TeamLeader
         $is_leader = User::find(Auth::id())->is_leader;
 
         if(!$is_leader) {
-            return redirect('/');
+            return response([
+                'message' => 'Unauthorized Access'
+            ], 401);
         }
 
         return $next($request);

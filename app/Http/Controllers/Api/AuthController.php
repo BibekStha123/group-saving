@@ -27,11 +27,8 @@ class AuthController extends Controller
             'is_leader' => true
         ]);
 
-        $token = $user->createToken('mytoken')->plainTextToken;
-
         return response([
             'user' => $user,
-            'token' => $token
         ]);
     }
 

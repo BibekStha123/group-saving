@@ -3,24 +3,27 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
+use function Laravel\Prompts\error;
 
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+
     public function index()
     {
-        //
         $authUserId = Auth::id();
         $team = User::find($authUserId)->team;
         return response([
-            'users' => $team->users
-       ]);
+            'users' => $team->users->except($authUserId)
+        ]);
     }
 
     /**
@@ -50,24 +53,64 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(User $user)
     {
-        //
+        $authUserId = Auth::id();
+        $authTeamId = User::find($authUserId)->team_id;
+        if ($authTeamId == $user->team_id) {
+            return response([
+                'user' => $user
+            ], 200);
+        }
+
+        return response([
+            'message' => 'Unauthorized Access'
+        ], 401);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, User $user)
     {
-        //
+
+        $data = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'min:6',
+            'gender' => 'required',
+            'dob' => 'required',
+            'address' => 'required',
+            'contact_no' => 'required|unique:users,contact_no,' .  $user->id,
+        ]);
+
+
+        if (isset($data['password'])) {
+            $data['password'] = bcrypt($data['password']);
+        }
+
+        $user->update($data);
+
+        return response([
+            'user' => $user,
+            'message' => 'User Updated Successfully'
+        ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(User $user)
     {
         //
+        $user->delete();
+
+        $authUserId = Auth::id();
+        $team = User::find($authUserId)->team;
+
+        return response([
+            'message' => 'Deleted Successfully',
+            'user' => $team->users->except($authUserId)
+        ]);
     }
 }
