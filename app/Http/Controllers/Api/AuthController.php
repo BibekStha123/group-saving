@@ -59,8 +59,7 @@ class AuthController extends Controller
         if (Auth::attempt($data)) {
             /** @var \App\Models\User $user **/
             $user = Auth::user();
-            $token = $user->createToken('mytoken')->plainTextToken;
-
+            $token = Auth::claims(['is_leader' => $user->is_leader])->attempt($data);
             return response([
                 'user' => $user,
                 'access_token' => $token
@@ -74,9 +73,8 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        /** @var \App\Models\User $user */
-        $user = $request->user();
-        $user->currentAccessToken()->delete;
+        auth()->logout(true);
+
         return response([
             'message' => "Logged Out Successfully"
         ], 200);
