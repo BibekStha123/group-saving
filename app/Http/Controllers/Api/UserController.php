@@ -16,7 +16,6 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-
     public function index()
     {
         $authUserId = Auth::id();
@@ -73,7 +72,6 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-
         $data = $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users,email,' . $user->id,
@@ -102,7 +100,6 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
         $user->delete();
 
         $authUserId = Auth::id();
@@ -112,5 +109,32 @@ class UserController extends Controller
             'message' => 'Deleted Successfully',
             'user' => $team->users->except($authUserId)
         ]);
+    }
+
+    public function udpateProfile(Request $request)
+    {
+        $userId = Auth::id();
+        $data = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,' . $userId,
+            'password' => 'min:6',
+            'gender' => 'required',
+            'dob' => 'required',
+            'address' => 'required',
+            'contact_no' => 'required|unique:users,contact_no,' .  $userId,
+        ]);
+
+
+        if (isset($data['password'])) {
+            $data['password'] = bcrypt($data['password']);
+        }
+
+        $user = User::whereId($userId);
+        $user->update($data);
+
+        return response([
+            'user' => $user->get(),
+            'message' => 'User Updated Successfully'
+        ], 200);
     }
 }

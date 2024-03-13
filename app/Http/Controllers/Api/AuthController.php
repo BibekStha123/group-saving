@@ -60,9 +60,11 @@ class AuthController extends Controller
             /** @var \App\Models\User $user **/
             $user = Auth::user();
             $token = Auth::claims(['is_leader' => $user->is_leader])->attempt($data);
+            // $refreshToken = Auth::claims(['is_leader' => $user->is_leader])->refresh();
             return response([
                 'user' => $user,
-                'access_token' => $token
+                'access_token' => $token,
+                // 'refresh_token' => $refreshToken
             ]);
         }
 
@@ -71,12 +73,22 @@ class AuthController extends Controller
         ], 401);
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
         auth()->logout(true);
 
         return response([
             'message' => "Logged Out Successfully"
+        ], 200);
+    }
+
+    public function refreshToken()
+    {
+        $user = Auth::user();
+        $access_token = Auth::claims(['is_leader' => $user->is_leader])->refresh(true, true);
+
+        return response([
+            'access_token' => $access_token
         ], 200);
     }
 }
