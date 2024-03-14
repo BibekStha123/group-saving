@@ -14,9 +14,7 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('team_id')->constrained();
-            $table->foreignId('contributor_id')->constrained(
-                table: 'users', indexName: 'contribution_user_id'
-            );
+            $table->foreignId('user_id')->constrained();
             $table->foreignId('created_by')->constrained(
                 table: 'users', indexName: 'creator_user_id'
             );

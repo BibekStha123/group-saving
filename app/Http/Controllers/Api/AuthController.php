@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Resources\UserResource;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -43,8 +44,7 @@ class AuthController extends Controller
             DB::commit();
 
             return response([
-                'user' => $user,
-                'team' => $team
+                'user' => new UserResource($user),
             ]);
         } catch (\Throwable $th) {
             //throw $th;
@@ -62,7 +62,7 @@ class AuthController extends Controller
             $token = Auth::claims(['is_leader' => $user->is_leader])->attempt($data);
             // $refreshToken = Auth::claims(['is_leader' => $user->is_leader])->refresh();
             return response([
-                'user' => $user,
+                'user' => new UserResource($user),
                 'access_token' => $token,
                 // 'refresh_token' => $refreshToken
             ]);

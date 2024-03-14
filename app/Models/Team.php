@@ -17,4 +17,9 @@ class Team extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
 }

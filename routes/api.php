@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\TeamController;
+use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,8 +25,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
     Route::middleware('is_leader')->group(function () {
         Route::apiResource('/users', UserController::class);
-    });
-
+    });    
+    Route::apiResource('/transactions', TransactionController::class);
     Route::put('/update-profile', [UserController::class, 'udpateProfile']);
 });
 

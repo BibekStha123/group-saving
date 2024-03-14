@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Requests\UserRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -44,7 +45,7 @@ class UserController extends Controller
         ]);
 
         return response([
-            'user' => $user,
+            'user' => new UserResource($user),
             'message' => 'User Created Successfully'
         ], 200);
     }
@@ -58,7 +59,7 @@ class UserController extends Controller
         $authTeamId = User::find($authUserId)->team_id;
         if ($authTeamId == $user->team_id) {
             return response([
-                'user' => $user
+                'user' => new UserResource($user)
             ], 200);
         }
 
@@ -90,7 +91,7 @@ class UserController extends Controller
         $user->update($data);
 
         return response([
-            'user' => $user,
+            'user' => new UserResource($user),
             'message' => 'User Updated Successfully'
         ], 200);
     }
@@ -133,7 +134,7 @@ class UserController extends Controller
         $user->update($data);
 
         return response([
-            'user' => $user->get(),
+            'user' => new UserResource($user->first()),
             'message' => 'User Updated Successfully'
         ], 200);
     }
