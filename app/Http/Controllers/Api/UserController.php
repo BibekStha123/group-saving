@@ -14,6 +14,11 @@ use function Laravel\Prompts\error;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('is_leader')->except('index');
+    }
+
     /**
      * Display a listing of the resource.
      */

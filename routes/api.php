@@ -23,9 +23,7 @@ Route::middleware('auth:api')->group(function () {
     });
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
-    Route::middleware('is_leader')->group(function () {
-        Route::apiResource('/users', UserController::class);
-    });    
+    Route::apiResource('/users', UserController::class);
     Route::apiResource('/transactions', TransactionController::class);
     Route::put('/update-profile', [UserController::class, 'udpateProfile']);
 });
